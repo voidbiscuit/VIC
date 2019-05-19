@@ -1,5 +1,5 @@
 #include "FreenectExampleModded/FreenectExampleModded.h"
-//#include "VisualEyes/VisualEyes.h"
+#include "VisualEyes/VisualEyes.h"
 #include <conio.h>
 
 using namespace std;
@@ -43,7 +43,7 @@ int main(int argc, char * argv[])
 	// Init Data
 	string filepath = "F:/Work/Year 3/Visual Intelligence/";
 	FreenectExampleModded freenectExampleModded = FreenectExampleModded(filepath+"images/", filepath + "Set1/");
-	//VisualEyes visualEyes = VisualEyes(filepath + "images/", "obj", "__", 20);
+	VisualEyes visualEyes = VisualEyes(filepath + "images/", "obj", "__", 20);
 
 	// Splash
 	Splash();
@@ -53,6 +53,7 @@ int main(int argc, char * argv[])
 		Clear();
 		cout << menu;
 		key = _getche();
+		//key = 'F';
 		key = key > 'Z' ? key - ' ' : key;
 		Clear();
 		switch (key) {
@@ -60,7 +61,7 @@ int main(int argc, char * argv[])
 			freenectExampleModded.Start();
 			break;
 		case 'V':
-			//visualEyes.Start();
+			visualEyes.Start();
 			break;
 		default:
 			break;

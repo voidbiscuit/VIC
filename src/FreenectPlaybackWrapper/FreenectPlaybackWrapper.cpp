@@ -34,6 +34,88 @@ bool IsLittleEndian()
 	return testValue.c[0] == 1;
 }
 
+
+
+vector<cv::Mat> FreenectPlaybackWrapper::GetFrame() {
+	// Init Vals
+	bool updatedRGB = false, updatedDepth = false;
+	string line = "", lastPath = "", fullPath = "";
+
+	// Get Next Line
+	if (previous_line != "") line = previous_line;
+	else getline(reader, line);
+
+	do
+	{
+		// If line is A, break
+		if (line[0] == 'a') continue;
+
+		// Set the fullpath to the video folder and the file name
+		fullPath = freenect_video_folder + "/" + line;
+		lastPath = line;
+		ifstream in(fullPath, ifstream::binary);
+		string format_settings;
+		uint32_t width, height, max_size;
+
+		switch (line[0]) {
+		case 'r':
+			// Read RGB
+			if (updatedRGB) break;
+			RGB = cv::imread(fullPath, cv::ImreadModes::IMREAD_UNCHANGED);
+			updatedRGB = true;
+			break;
+		case 'd':
+			if (updatedDepth)
+				break;
+			getline(in, format_settings);
+
+
+			sscanf(format_settings.c_str(), "P5 %d %d %d", &width, &height, &max_size);
+
+			DepthRaw = cv::Mat(cv::Size(width, height), CV_16UC1);
+
+			in.read((char*)DepthRaw.data, width * height * sizeof(uint16_t));
+			in.close();
+
+			// Swap Endian
+			if (!IsLittleEndian())
+				for (unsigned int i = 0; i < width * height; i++)
+					std::swap(DepthRaw.data[2 * i], DepthRaw.data[2 * i + 1]);
+
+			Depth = cv::Mat(cv::Size(width, height), CV_8UC1);
+			for (unsigned int i = 0; i < width * height; i++) Depth.data[i] = DepthRaw.data[i] >> 3;
+			updatedDepth = true;
+			break;
+		default:
+			finished = true;
+			break;
+		}
+		previous_line = line;
+	} while (getline(reader, line));
+
+	double newTime = GetTimestampFromFilename(lastPath);
+
+	if (previous_timestamp != 0)
+	{
+		double diff = newTime - previous_timestamp;
+		diff *= 1000;
+
+		chrono::milliseconds now = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch());
+		chrono::milliseconds time_to_wait = chrono::milliseconds((int)diff) - (now - previous_time_ran);
+
+		if (time_to_wait.count() > 0)
+			this_thread::sleep_for(time_to_wait);
+	}
+
+	previous_time_ran = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch());
+	previous_timestamp = newTime;
+
+	if (reader.eof())
+		finished = true;
+	std::vector<cv::Mat> returnval({ RGB, Depth, DepthRaw });
+	return returnval;
+}
+
 uint8_t FreenectPlaybackWrapper::GetNextFrame()
 {
 	if (finished)
@@ -64,7 +146,7 @@ uint8_t FreenectPlaybackWrapper::GetNextFrame()
 			if (updatedRGB)
 				break;
 
-			
+
 			RGB = cv::imread(fullPath, cv::ImreadModes::IMREAD_UNCHANGED);
 			updatedRGB = true;
 		}
@@ -83,7 +165,7 @@ uint8_t FreenectPlaybackWrapper::GetNextFrame()
 
 			DepthRaw = cv::Mat(cv::Size(width, height), CV_16UC1);
 
-			in.read((char*) DepthRaw.data, width * height * sizeof(uint16_t));
+			in.read((char*)DepthRaw.data, width * height * sizeof(uint16_t));
 			in.close();
 
 			if (!IsLittleEndian())
@@ -121,10 +203,10 @@ uint8_t FreenectPlaybackWrapper::GetNextFrame()
 	{
 		double diff = newTime - previous_timestamp;
 		diff *= 1000;
-		
+
 		chrono::milliseconds now = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch());
 		chrono::milliseconds time_to_wait = chrono::milliseconds((int)diff) - (now - previous_time_ran);
-		
+
 		if (time_to_wait.count() > 0)
 			this_thread::sleep_for(time_to_wait);
 	}

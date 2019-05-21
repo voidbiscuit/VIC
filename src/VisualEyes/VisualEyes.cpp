@@ -25,6 +25,7 @@ void VisualEyes::Start() {
 	Splash();
 	// Set Window
 	cv::startWindowThread();
+	key = ' ';
 	while (this->key != 'Q') {
 		// Reset Window
 		cv::destroyAllWindows();
@@ -165,6 +166,8 @@ void VisualEyes::RecognEyes() {
 		}
 	}
 	// Kill WebCam
+	web_cam.~VideoCapture();
+	web_cam.release();
 }
 
 

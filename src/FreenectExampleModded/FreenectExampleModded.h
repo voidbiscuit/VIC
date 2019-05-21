@@ -12,6 +12,7 @@ class FreenectExampleModded {
 private:
 	// Images
 	string _image_path = "";
+
 	class ImageObject {
 	public:
 		string name;
@@ -21,6 +22,7 @@ private:
 		void add_image(cv::Mat image) { this->images.push_back(image); }
 	};
 	vector<ImageObject> _image_objects;
+
 	int _image_object_count = 20,
 		_image_object_images = 72;
 

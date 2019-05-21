@@ -1,4 +1,4 @@
-
+﻿
 #include "FreenectExampleModded.h"
 
 using namespace cv;
@@ -30,10 +30,13 @@ void FreenectExampleModded::LoadImages() {
 }
 
 void FreenectExampleModded::LearnImages() {
+	// Support Vector Machine
+	// https://docs.opencv.org/3.4/d1/d2d/classcv_1_1ml_1_1SVM.html
+	// Create SVM
 	cout << "\nCreating SVM";
-	// Init SVM
 	_support_vector_machine = cv::ml::SVM::create();
 	// Set Properties
+	// C-Support Vector Classification :  n-class classification (n ≥ 2), allows imperfect separation of classes with penalty multiplier C for outliers.
 	_support_vector_machine->setType(cv::ml::SVM::C_SVC);
 	_support_vector_machine->setKernel(cv::ml::SVM::LINEAR);
 	_support_vector_machine->setTermCriteria(cv::TermCriteria(cv::TermCriteria::MAX_ITER,2,0));
@@ -164,10 +167,10 @@ void FreenectExampleModded::ViewVideo() {
 			// Load Frame
 			current_frame = stream[current_frame_id];
 			// Test RGB
-			//current_frame.depth = current_frame.rgb;
-			//cv::cvtColor(current_frame.depth, current_frame.depth, cv::COLOR_RGB2GRAY);
+			current_frame.depth = current_frame.rgb;
+			cv::cvtColor(current_frame.depth, current_frame.depth, cv::COLOR_RGB2GRAY);
 			// Resize
-			current_frame.depth = current_frame.depth(cv::Rect(640 / 2 - 64 * 2, 480 / 2 - 48 * 2, 64 * 4, 48 * 4));
+			current_frame.depth = current_frame.depth(cv::Rect(640 / 2 - 64 * 2, 480 / 2 - 48 * 3, 64 * 5, 48 * 4));
 			cv::resize(current_frame.depth, current_frame.depth, Size(640, 480), 0, 0, INTER_CUBIC);
 			// Load Images from Frame
 			imshow(_RGB, current_frame.rgb);

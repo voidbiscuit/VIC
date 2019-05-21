@@ -8,16 +8,12 @@ set(CMAKE_SOURCE_DIRECTORY src)
 find_package(OpenCV REQUIRED)
 
 # Freenect
-set(FreenectExampleModded src/FreenectExampleModded/FreenectExampleModded.h src/FreenectExampleModded/FreenectExampleModded.cpp)
-set(FreenectPlaybackWrapper src/FreenectPlaybackWrapper/FreenectPlaybackWrapper.h src/FreenectPlaybackWrapper/FreenectPlaybackWrapper.cpp)
-set(Freenect ${FreenectPlaybackWrapper} ${FreenectExampleModded})
-
+set(FenVIC src/FenVIC/FenVIC.h src/FenVIC/FenVIC.cpp)
 # Visual Eyes
-set(ImageObject src/VisualEyes/ImageObject/ImageObject.h src/VisualEyes/ImageObject/ImageObject.cpp)
-set(VisualEyes ${ImageObject} src/VisualEyes/VisualEyes.h src/VisualEyes/VisualEyes.cpp)
-
+set(ImageObject src/VisuII/ImageObject/ImageObject.h src/VisuII/ImageObject/ImageObject.cpp)
+set(VisuII ${ImageObject} src/VisuII/VisuII.h src/VisuII/VisuII.cpp)
 # Source Files
-set(SourceFiles ${Freenect} ${VisualEyes})
+set(SourceFiles ${FenVIC} ${VisuII})
 
 # Create Executable With Source Files
 add_executable(VIC ${SourceFiles} src/VIC.cpp)

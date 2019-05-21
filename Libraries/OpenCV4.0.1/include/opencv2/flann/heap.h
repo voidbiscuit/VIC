@@ -99,9 +99,9 @@ public:
     /**
      * Clears the heap.
      */
-    void clear()
+    void Clear()
     {
-        heap.clear();
+        heap.Clear();
         count = 0;
     }
 

@@ -38,7 +38,7 @@ void FenVIC::LearnImages() {
 	// C-Support Vector Classification :  n-class classification (n ≥ 2), allows imperfect separation of classes with penalty multiplier C for outliers.
 	_support_vector_machine->setType(cv::ml::SVM::C_SVC);
 	_support_vector_machine->setKernel(cv::ml::SVM::LINEAR);
-	_support_vector_machine->setTermCriteria(cv::TermCriteria(cv::TermCriteria::MAX_ITER,2,0));
+	_support_vector_machine->setTermCriteria(cv::TermCriteria(cv::TermCriteria::MAX_ITER, 2, 0));
 	// Train Data Size
 	cv::Mat training_data(20 * 72, 128 * 128, CV_32FC1);
 	cv::Mat training_labels(20 * 72, 1, CV_32SC1);
@@ -109,6 +109,8 @@ void FenVIC::LoadVideo() {
 			case 'r': // RGB
 				current_frame.rgb = cv::imread(file_path, cv::ImreadModes::IMREAD_UNCHANGED);
 				if (!(current_frame.depth_raw.size == empty_picture.size || current_frame.depth.size == empty_picture.size)) {
+					for (unsigned int pixel = 0; pixel < width*height; pixel++)
+						current_frame.depth.data[pixel] = ((uint8_t)current_frame.depth_raw.data[(pixel * sizeof(uint16_t)) - 1]) >> low_pass << low_pass << shift;
 					// Push Current Frame
 					stream.push_back(current_frame);
 					// Clear current frame
@@ -134,7 +136,7 @@ void FenVIC::LoadVideo() {
 
 				// Read Depth Raw into Depth
 				for (unsigned int pixel = 0; pixel < width*height; pixel++)
-					current_frame.depth.data[pixel] = ((uint8_t)current_frame.depth_raw.data[(pixel * sizeof(uint16_t))-1]) >> low_pass << low_pass << shift;
+					current_frame.depth.data[pixel] = ((uint8_t)current_frame.depth_raw.data[(pixel * sizeof(uint16_t)) - 1]) >> low_pass << low_pass << shift;
 				break;
 			default:
 				cout << "\nUnrecognised File";
@@ -157,6 +159,7 @@ void FenVIC::ViewVideo() {
 	_key = -1;
 	current_frame_id = 0;
 	frame_switched = true;
+	cv::Mat mask = cv::Mat();
 	while (_key != 27) {
 		// If the Frame hasn't been loaded
 		if (frame_switched)
@@ -165,6 +168,14 @@ void FenVIC::ViewVideo() {
 			frame_switched = false;
 			// Load Frame
 			current_frame = stream[current_frame_id];
+			
+			
+			// Mask RGB data to Depth
+			mask = cv::Mat(current_frame.rgb);
+			cv::cvtColor(mask, mask, cv::COLOR_RGB2GRAY);
+			for (int i = 0; i < 640 * 480; i++)
+				current_frame.depth.data[i] = current_frame.depth.data[i] <= 64 ? mask.data[i] : 0;
+
 			// Test RGB
 			//current_frame.depth = current_frame.rgb;
 			//cv::cvtColor(current_frame.depth, current_frame.depth, cv::COLOR_RGB2GRAY);
@@ -175,7 +186,7 @@ void FenVIC::ViewVideo() {
 			imshow(_RGB, current_frame.rgb);
 			imshow(_Depth_Raw, current_frame.depth_raw);
 			imshow(_Depth, current_frame.depth);
-			// Preprare frame for prediction
+			// Preprare frame for prediction;
 			cv::resize(current_frame.depth, current_frame.depth, cv::Size(128, 128), 0, 0, cv::InterpolationFlags::INTER_CUBIC);
 			current_frame.depth = current_frame.depth.reshape(0, 1);
 			current_frame.depth.convertTo(current_frame.depth, CV_32FC1);

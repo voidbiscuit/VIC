@@ -293,7 +293,7 @@ private:
             for (BucketsSpace::const_iterator key_bucket = buckets_space_.begin(); key_bucket != buckets_space_.end(); ++key_bucket) buckets_speed_[key_bucket->first] = key_bucket->second;
 
             // Empty the hash table
-            buckets_space_.Clear();
+            buckets_space_.clear();
             return;
         }
 
@@ -309,7 +309,7 @@ private:
         }
         else {
             speed_level_ = kHash;
-            key_bitset_.Clear();
+            key_bitset_.clear();
         }
     }
 

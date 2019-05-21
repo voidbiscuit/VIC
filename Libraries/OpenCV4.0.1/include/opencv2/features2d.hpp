@@ -882,9 +882,9 @@ public:
      */
     CV_WRAP const std::vector<Mat>& getTrainDescriptors() const;
 
-    /** @brief Clears the train descriptor collections.
+    /** @brief clears the train descriptor collections.
      */
-    CV_WRAP virtual void Clear() CV_OVERRIDE;
+    CV_WRAP virtual void clear() CV_OVERRIDE;
 
     /** @brief Returns true if there are no train descriptors in the both collections.
      */
@@ -1063,7 +1063,7 @@ protected:
 
         // Vector of matrices "descriptors" will be merged to one matrix "mergedDescriptors" here.
         void set( const std::vector<Mat>& descriptors );
-        virtual void Clear();
+        virtual void clear();
 
         const Mat& getDescriptors() const;
         const Mat getDescriptor( int imgIdx, int localDescIdx ) const;
@@ -1156,7 +1156,7 @@ public:
                        const Ptr<flann::SearchParams>& searchParams=makePtr<flann::SearchParams>() );
 
     virtual void add( InputArrayOfArrays descriptors ) CV_OVERRIDE;
-    virtual void Clear() CV_OVERRIDE;
+    virtual void clear() CV_OVERRIDE;
 
     // Reads matcher object from a file node
     virtual void read( const FileNode& ) CV_OVERRIDE;
@@ -1319,7 +1319,7 @@ public:
     */
     CV_WRAP int descriptorsCount() const;
 
-    CV_WRAP virtual void Clear();
+    CV_WRAP virtual void clear();
 
     /** @overload */
     CV_WRAP virtual Mat cluster() const = 0;

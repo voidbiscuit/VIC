@@ -1138,7 +1138,7 @@ public:
             m_childs[i]->m_pParent = 0; // avoid excessive parent vector trimming
             delete m_childs[i];
         }
-        m_childs.Clear();
+        m_childs.clear();
     }
 
     int getDepth()

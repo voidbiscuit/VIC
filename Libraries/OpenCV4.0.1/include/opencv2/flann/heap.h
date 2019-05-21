@@ -97,11 +97,11 @@ public:
     }
 
     /**
-     * Clears the heap.
+     * clears the heap.
      */
-    void Clear()
+    void clear()
     {
-        heap.Clear();
+        heap.clear();
         count = 0;
     }
 

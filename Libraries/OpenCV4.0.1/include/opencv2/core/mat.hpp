@@ -364,7 +364,7 @@ public:
     void create(int dims, const int* size, int type, int i=-1, bool allowTransposed=false, _OutputArray::DepthMask fixedDepthMask=static_cast<_OutputArray::DepthMask>(0)) const;
     void createSameSize(const _InputArray& arr, int mtype) const;
     void release() const;
-    void Clear() const;
+    void clear() const;
     void setTo(const _InputArray& value, const _InputArray & mask = _InputArray()) const;
 
     void assign(const UMat& u) const;
@@ -2671,7 +2671,7 @@ public:
     struct CV_EXPORTS Hdr
     {
         Hdr(int _dims, const int* _sizes, int _type);
-        void Clear();
+        void clear();
         int refcount;
         int dims;
         int valueOffset;
@@ -2757,7 +2757,7 @@ public:
     */
     void create(int dims, const int* _sizes, int _type);
     //! sets all the sparse matrix elements to 0, which means clearing the hash table.
-    void Clear();
+    void clear();
     //! manually increments the reference counter to the header.
     void addref();
     // decrements the header reference counter. When the counter reaches 0, the header and all the underlying data are deallocated.

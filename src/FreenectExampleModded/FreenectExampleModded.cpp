@@ -1,7 +1,7 @@
 ﻿
 #include "FreenectExampleModded.h"
+#include "opencv2/opencv.hpp"
 
-using namespace cv;
 using namespace std;
 
 FreenectExampleModded::FreenectExampleModded(string image_path, string video_path) {

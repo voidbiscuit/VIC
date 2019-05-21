@@ -1,6 +1,6 @@
 #pragma once
 // Includes
-#include "../FreenectPlaybackWrapper/FreenectPlaybackWrapper.h"
+
 #include <string>
 
 // Namespace

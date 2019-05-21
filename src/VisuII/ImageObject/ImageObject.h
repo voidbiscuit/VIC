@@ -13,8 +13,8 @@ public:
 	ImageObject(string name);
 	// Functions
 	void AddImage(cv::Mat image);
-	char Display();
-	char LoopDisplay();
+	char Display(string window_name);
+	char LoopDisplay(string window_name);
 	double Likeness(cv::Mat image);
 	// Data
 	string name;

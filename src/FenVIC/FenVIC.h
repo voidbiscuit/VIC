@@ -1,13 +1,23 @@
 #pragma once
 // Includes
-#include "../FreenectPlaybackWrapper/FreenectPlaybackWrapper.h"
-#include <string>
 
+#include <opencv2/opencv.hpp>
+#include <string>
+#include <iostream>
+#include <chrono>
+#include <algorithm>
+#include <sstream>
+#include <thread>
+#include <fstream>
+#include <cstdint>
+#include <vector>
+
+#define cls(); system("cls");
 // Namespace
 using namespace std;
 
 
-class FreenectExampleModded {
+class FenVIC {
 
 private:
 	// Images
@@ -57,7 +67,7 @@ private:
 	vector<frame> stream;
 
 public:
-	FreenectExampleModded(string image_path, string video_path);
+	FenVIC(string image_path, string video_path);
 	void Start();
 
 private:

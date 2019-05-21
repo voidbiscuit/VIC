@@ -198,7 +198,7 @@ public:
 
         KNNUniqueResultSet<DistanceType> resultSet(knn);
         for (size_t i = 0; i < queries.rows; i++) {
-            resultSet.clear();
+            resultSet.Clear();
             std::fill_n(indices[i], knn, -1);
             std::fill_n(dists[i], knn, std::numeric_limits<DistanceType>::max());
             findNeighbors(resultSet, queries[i], params);

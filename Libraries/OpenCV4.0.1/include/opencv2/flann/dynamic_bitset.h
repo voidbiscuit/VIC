@@ -74,7 +74,7 @@ public:
 
     /** Sets all the bits to 0
      */
-    void clear()
+    void Clear()
     {
         std::fill(bitset_.begin(), bitset_.end(), 0);
     }

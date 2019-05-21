@@ -12,21 +12,21 @@ void ImageObject::AddImage(cv::Mat image) {
 	this->objectFiles.push_back(image);
 }
 
-char ImageObject::Display(string window_name) {
+char ImageObject::Display() {
 	char key = -1;
 	for (cv::Mat frame : this->objectFiles)
 	{
-		imshow(window_name, frame);
+		imshow("VisualEyes", frame);
 		key = cv::waitKey(this->time);
 		if (key != -1) break;
 	}
 	return key;
 }
 
-char ImageObject::LoopDisplay(string window_name) {
+char ImageObject::LoopDisplay() {
 	char key = -1;
 	while (key == -1)
-		key = Display(window_name);
+		key = Display();
 	return key;
 }
 

@@ -3077,7 +3077,7 @@ public:
 
     /** @brief Clears the algorithm state
     */
-    CV_WRAP virtual void Clear() {}
+    CV_WRAP virtual void clear() {}
 
     /** @brief Stores algorithm parameters in a file storage
     */

@@ -317,7 +317,7 @@ public:
 
     /** Remove all elements in the set
      */
-    virtual void Clear() = 0;
+    virtual void clear() = 0;
 
     /** Copy the set to two C arrays
      * @param indices pointer to a C array of indices
@@ -395,7 +395,7 @@ public:
     KNNUniqueResultSet(unsigned int capacity) : capacity_(capacity)
     {
         this->is_full_ = false;
-        this->Clear();
+        this->clear();
     }
 
     /** Add a possible candidate to the best neighbors
@@ -422,9 +422,9 @@ public:
 
     /** Remove all elements in the set
      */
-    void Clear() CV_OVERRIDE
+    void clear() CV_OVERRIDE
     {
-        dist_indices_.Clear();
+        dist_indices_.clear();
         worst_distance_ = std::numeric_limits<DistanceType>::max();
         is_full_ = false;
     }
@@ -468,9 +468,9 @@ public:
 
     /** Remove all elements in the set
      */
-    inline void Clear() CV_OVERRIDE
+    inline void clear() CV_OVERRIDE
     {
-        dist_indices_.Clear();
+        dist_indices_.clear();
     }
 
 
@@ -516,14 +516,14 @@ public:
         this->capacity_ = capacity;
         this->radius_ = radius;
         this->dist_indices_.reserve(capacity_);
-        this->Clear();
+        this->clear();
     }
 
     /** Remove all elements in the set
      */
-    void Clear()
+    void clear()
     {
-        dist_indices_.Clear();
+        dist_indices_.clear();
         worst_distance_ = radius_;
         is_full_ = false;
     }

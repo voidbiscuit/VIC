@@ -1,11 +1,11 @@
 
 
-#include "VisuII.h"
+#include "VisualEyes.h"
 
 using namespace std;
 
 
-VisuII::VisuII(string filepath, string identifier, string splitter, int count) {
+VisualEyes::VisualEyes(string filepath, string identifier, string splitter, int count) {
 	this->default_filepath = filepath;
 	this->filepath = filepath;
 	this->identifier = identifier;
@@ -13,34 +13,29 @@ VisuII::VisuII(string filepath, string identifier, string splitter, int count) {
 	this->count = count;
 }
 
-void VisuII::Start() {
-	cout <<
-		"\n                              "\
-		"\n    .---------------------.   "\
-		"\n    |   Starting VisuII   |   "\
-		"\n    '---------------------'   "\
-		"\n                              "\
-		;
+void VisualEyes::Clear() { for (int _ = 0; _ < 100; _++) printf("\n"); }
+
+void VisualEyes::Splash() {
+	Clear();
+	cout << splash;
+	_sleep(1000);
+}
+
+void VisualEyes::Start() {
+	Splash();
 	// Set Window
 	cv::startWindowThread();
 	key = ' ';
 	while (this->key != 'Q') {
 		// Reset Window
 		cv::destroyAllWindows();
-		cls();
+
+
+
+		// Clear Screen
+		Clear();
 		// Menu
-		cout <<
-			"\n                              "\
-			"\n           VisuII             "\
-			"\n                              "\
-			"\n  S - Set Path                "\
-			"\n  L - Load Objects            "\
-			"\n  D - Display Objects         "\
-			"\n  R - Recognise               "\
-			"\n                              "\
-			"\n  Q - Quit                    "\
-			"\n                              "\
-			;
+		cout << menu;
 		// Data
 		cout << \
 			"\n Path       : " << this->filepath << \
@@ -50,7 +45,7 @@ void VisuII::Start() {
 		// Input
 		this->key = _getche();
 		this->key = this->key > 'Z' ? this->key - ' ' : this->key;
-		cls();
+		Clear();
 		// Handling
 		switch (key) {
 		case 'S':
@@ -65,13 +60,13 @@ void VisuII::Start() {
 			break;
 		case 'D':
 			// Create Window
-			cv::namedWindow(_VisuII, cv::WINDOW_NORMAL);
-			cv::resizeWindow(_VisuII, this->window_dimension[0], this->window_dimension[1]);
-			cv::moveWindow(_VisuII, 1920 - this->window_dimension[0], 1080 - this->window_dimension[1]);
+			cv::namedWindow(_VisualEyes, cv::WINDOW_NORMAL);
+			cv::resizeWindow(_VisualEyes, this->window_dimension[0], this->window_dimension[1]);
+			cv::moveWindow(_VisualEyes, 1920 - this->window_dimension[0], 1080 - this->window_dimension[1]);
 			DisplayObjects();
 			break;
 		case 'R':
-			cv::namedWindow(_VisuII, cv::WINDOW_FULLSCREEN);
+			cv::namedWindow(_VisualEyes, cv::WINDOW_FULLSCREEN);
 			RecognEyes();
 			break;
 		default:
@@ -82,11 +77,11 @@ void VisuII::Start() {
 
 
 
-void VisuII::SetPath(string filepath) {
+void VisualEyes::SetPath(string filepath) {
 	this->filepath = filepath;
 }
 
-void VisuII::LoadObject(string image_name)
+void VisualEyes::LoadObject(string image_name)
 {
 	ImageObject imageObject = ImageObject(image_name);
 	for (int frame_id = 0; frame_id < 72; frame_id++) {
@@ -96,7 +91,7 @@ void VisuII::LoadObject(string image_name)
 	this->imageObjects.push_back(imageObject);
 }
 
-void VisuII::LoadObjects() {
+void VisualEyes::LoadObjects() {
 	imageObjects.clear();
 	cout << "\nLoading Objects";
 	for (int imageObjectID = 0; imageObjectID < count; imageObjectID++) {
@@ -105,14 +100,14 @@ void VisuII::LoadObjects() {
 	}
 }
 
-void VisuII::DisplayObject(string identifier) {
+void VisualEyes::DisplayObject(string identifier) {
 	for (ImageObject imageObject : this->imageObjects)
 		if (identifier == imageObject.name)
-			imageObject.LoopDisplay(_VisuII);
+			imageObject.LoopDisplay();
 }
 
 
-void VisuII::DisplayObjects() {
+void VisualEyes::DisplayObjects() {
 	cout
 		<< "\n"
 		<< "\nDisplaying Objects <A D>";
@@ -124,7 +119,7 @@ void VisuII::DisplayObjects() {
 			while (imageObjectID < 0) imageObjectID += imageObjects.size();
 			imageObjectID %= imageObjects.size();
 			// Get Key from Looped Display
-			this->key = imageObjects[imageObjectID].LoopDisplay(_VisuII);
+			this->key = imageObjects[imageObjectID].LoopDisplay();
 			// Act according to key
 			switch (this->key) {
 			case this->LEFT:
@@ -138,7 +133,7 @@ void VisuII::DisplayObjects() {
 	}
 }
 
-void VisuII::RecognEyes() {
+void VisualEyes::RecognEyes() {
 	// Display till Esc pressed
 	this->key = -1;
 	bool webcam_status = true;
@@ -161,7 +156,7 @@ void VisuII::RecognEyes() {
 				// Analyse Frame
 				//cout << "\nMost Likely " << MostLikely(this->frame);
 				// Display Frame
-				cv::imshow(this->_VisuII, this->frame);
+				cv::imshow(this->_VisualEyes, this->frame);
 				// Get Key
 			}
 			this->key = cv::waitKey(1);
@@ -176,7 +171,7 @@ void VisuII::RecognEyes() {
 }
 
 
-int VisuII::MostLikely(cv::Mat image) {
+int VisualEyes::MostLikely(cv::Mat image) {
 	int mostLikely = 0;
 	double maxLikely = 0;
 	for (int imageID = 0; imageID < this->imageObjects.size(); imageID++)

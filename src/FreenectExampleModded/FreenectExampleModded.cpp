@@ -1,14 +1,15 @@
 ﻿
-#include "FenVIC.h"
+#include "FreenectExampleModded.h"
 
+using namespace cv;
 using namespace std;
 
-FenVIC::FenVIC(string image_path, string video_path) {
+FreenectExampleModded::FreenectExampleModded(string image_path, string video_path) {
 	_image_path = image_path;
 	_video_path = video_path;
 }
 
-void FenVIC::LoadImages() {
+void FreenectExampleModded::LoadImages() {
 	// Remove Image Objects
 	_image_objects.clear();
 	cout << "\nLoading Images";
@@ -28,7 +29,7 @@ void FenVIC::LoadImages() {
 	}
 }
 
-void FenVIC::LearnImages() {
+void FreenectExampleModded::LearnImages() {
 	// Support Vector Machine
 	// https://docs.opencv.org/3.4/d1/d2d/classcv_1_1ml_1_1SVM.html
 	// Create SVM
@@ -65,20 +66,20 @@ void FenVIC::LearnImages() {
 }
 
 
-void FenVIC::DecorateFrame(frame frame, int frame_id, int frame_count) {
+void FreenectExampleModded::DecorateFrame(frame frame, int frame_id, int frame_count) {
 	string text = to_string(frame_id) + "/" + to_string(frame_count);
-	putText(frame.rgb, text, cv::Point(0, 10), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(0, 0, 0));
-	putText(frame.depth_raw, text, cv::Point(0, 10), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(0, 0, 0));
-	putText(frame.depth, text, cv::Point(0, 10), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(0, 0, 0));
+	putText(frame.rgb, text, cv::Point(0, 10), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 0));
+	putText(frame.depth_raw, text, cv::Point(0, 10), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 0));
+	putText(frame.depth, text, cv::Point(0, 10), FONT_HERSHEY_PLAIN, 1, Scalar(0, 0, 0));
 
 }
 
-void FenVIC::DecorateVideo(vector<frame> stream) {
+void FreenectExampleModded::DecorateVideo(vector<frame> stream) {
 	for (int frame_id = 0; frame_id < stream.size(); frame_id++)
 		DecorateFrame(stream[frame_id], frame_id + 1, stream.size());
 }
 
-void FenVIC::LoadVideo() {
+void FreenectExampleModded::LoadVideo() {
 	// Load Video from Directory
 	// File Readers
 	std::ifstream index_reader, file_reader;
@@ -145,14 +146,14 @@ void FenVIC::LoadVideo() {
 	return;
 }
 
-void FenVIC::ViewVideo() {
+void FreenectExampleModded::ViewVideo() {
 	system("cls");
 	// Destroy all windows, then create windows
-	cv::destroyAllWindows();
-	cv::namedWindow(_RGB, _flags);
-	cv::namedWindow(_Depth, _flags);
-	cv::namedWindow(_Depth_Raw, _flags);
-	cv::namedWindow(_Guess, _flags);
+	destroyAllWindows();
+	namedWindow(_RGB, _flags);
+	namedWindow(_Depth, _flags);
+	namedWindow(_Depth_Raw, _flags);
+	namedWindow(_Guess, _flags);
 	// Set Keys and Image
 	_key = -1;
 	current_frame_id = 0;
@@ -166,17 +167,17 @@ void FenVIC::ViewVideo() {
 			// Load Frame
 			current_frame = stream[current_frame_id];
 			// Test RGB
-			//current_frame.depth = current_frame.rgb;
-			//cv::cvtColor(current_frame.depth, current_frame.depth, cv::COLOR_RGB2GRAY);
+			current_frame.depth = current_frame.rgb;
+			cv::cvtColor(current_frame.depth, current_frame.depth, cv::COLOR_RGB2GRAY);
 			// Resize
 			current_frame.depth = current_frame.depth(cv::Rect(640 / 2 - 64 * 2, 480 / 2 - 48 * 3, 64 * 5, 48 * 4));
-			cv::resize(current_frame.depth, current_frame.depth, cv::Size(640, 480), 0, 0, cv::InterpolationFlags::INTER_CUBIC);
+			cv::resize(current_frame.depth, current_frame.depth, Size(640, 480), 0, 0, INTER_CUBIC);
 			// Load Images from Frame
 			imshow(_RGB, current_frame.rgb);
 			imshow(_Depth_Raw, current_frame.depth_raw);
 			imshow(_Depth, current_frame.depth);
 			// Preprare frame for prediction
-			cv::resize(current_frame.depth, current_frame.depth, cv::Size(128, 128), 0, 0, cv::InterpolationFlags::INTER_CUBIC);
+			cv::resize(current_frame.depth, current_frame.depth, Size(128, 128), 0, 0, INTER_CUBIC);
 			current_frame.depth = current_frame.depth.reshape(0, 1);
 			current_frame.depth.convertTo(current_frame.depth, CV_32FC1);
 			// Make Prediction
@@ -189,7 +190,7 @@ void FenVIC::ViewVideo() {
 		// Show image based on prediction
 		imshow(_Guess, _image_objects[current_guess].images[current_guess_rotation]);
 		// Get Key and Convert to Upper Case
-		_key = cv::waitKey(40);
+		_key = waitKey(40);
 		if (_key > 'Z') _key -= ' ';
 		// Act on Keys
 		switch (_key) {
@@ -203,10 +204,10 @@ void FenVIC::ViewVideo() {
 	}
 
 	// Destroy Windows and Exit
-	cv::destroyAllWindows();
+	destroyAllWindows();
 }
 
-void FenVIC::Start() {
+void FreenectExampleModded::Start() {
 	// File Name
 	cout << "\nVideo File  : " << _video_path;
 	cout << "\nImage Files : " << _image_path;
